@@ -1,0 +1,176 @@
+name: CI
+
+on:
+  push:
+    branches: [main, dev, 'feat/**', 'fix/**']
+  pull_request:
+    branches: [main, dev]
+
+env:
+  NODE_VERSION: '22'
+
+jobs:
+  # ── 1. Lint + Type-check + Convention checker ──────────────────────────────
+  lint:
+    name: Lint & Conventions
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: ESLint
+        run: npm run lint
+
+      - name: Convention checker (AGENTS.md rules)
+        run: node scripts/check-conventions.js
+
+      - name: TypeScript type-check
+        run: npx tsc --noEmit
+
+  # ── 2. Tests (SQLite in-memory) ────────────────────────────────────────────
+  test:
+    name: Tests (SQLite)
+    runs-on: ubuntu-latest
+    needs: lint
+    env:
+      NODE_ENV: test
+      DB_TYPE: better-sqlite3
+      DB_DATABASE: ':memory:'
+      SESSION_SECRET: ci-test-session-secret-minimum-32-chars
+      JWT_SECRET: ci-test-jwt-secret-minimum-32-chars
+      JWT_EXPIRES_IN: '3600'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests with coverage
+        run: npm run test:cov
+
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: coverage/
+
+  # ── 3. Security audit ──────────────────────────────────────────────────────
+  audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: npm audit
+        run: npm audit --audit-level=moderate
+
+  # ── 4. DB compatibility — migration on each dialect ───────────────────────
+  db-compat:
+    name: DB Compat (${{ matrix.db }})
+    runs-on: ubuntu-latest
+    needs: lint
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - db: sqlite
+            db_type: better-sqlite3
+            db_database: ':memory:'
+            services: {}
+
+          - db: mysql
+            db_type: mysql
+            db_host: 127.0.0.1
+            db_port: 3306
+            db_database: nestadmin_ci
+            db_username: ci_user
+            db_password: ci_password
+
+          - db: postgres
+            db_type: postgres
+            db_host: 127.0.0.1
+            db_port: 5432
+            db_database: nestadmin_ci
+            db_username: ci_user
+            db_password: ci_password
+
+    services:
+      mysql:
+        image: ${{ matrix.db == 'mysql' && 'mysql:8.0' || '' }}
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: nestadmin_ci
+          MYSQL_USER: ci_user
+          MYSQL_PASSWORD: ci_password
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+      postgres:
+        image: ${{ matrix.db == 'postgres' && 'postgres:16' || '' }}
+        env:
+          POSTGRES_DB: nestadmin_ci
+          POSTGRES_USER: ci_user
+          POSTGRES_PASSWORD: ci_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U ci_user"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      NODE_ENV: test
+      DB_TYPE: ${{ matrix.db_type }}
+      DB_HOST: ${{ matrix.db_host || '' }}
+      DB_PORT: ${{ matrix.db_port || '' }}
+      DB_DATABASE: ${{ matrix.db_database }}
+      DB_USERNAME: ${{ matrix.db_username || '' }}
+      DB_PASSWORD: ${{ matrix.db_password || '' }}
+      SESSION_SECRET: ci-test-session-secret-minimum-32-chars
+      JWT_SECRET: ci-test-jwt-secret-minimum-32-chars
+      JWT_EXPIRES_IN: '3600'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run migrations (${{ matrix.db }})
+        run: npm run migration:run
