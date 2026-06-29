@@ -7,9 +7,6 @@
     <h2 class="text-lg font-bold" style="color:var(--primary)">Permission List</h2>
     <div class="btn-group btn-sm">
       <a href="<%= route('admin.v1.access.permission.create') %>" class="btn btn-success btn-sm"><i class="fas fa-fw fa-plus"></i> Add Data</a>
-      <form method="POST" action="<%= route('admin.v1.access.permission.sync') %>" class="d-inline">
-        <button type="submit" class="btn btn-info btn-sm"><i class="fas fa-fw fa-sync"></i> Sync Routes</button>
-      </form>
       <button type="submit" form="selection" formmethod="post" formaction="<%= route('admin.v1.access.permission.delete_selected') %>" data-confirm="Confirm Delete" class="btn btn-danger btn-sm"><i class="fas fa-fw fa-times"></i> Delete Selected</button>
     </div>
   </div>
@@ -28,9 +25,24 @@
                 <option value="100" <%= ((!filter.q_page_size) ? '' : (filter.q_page_size == 100)) ? 'selected' : '' %>>100</option>
               </select>
             </th>
-            <th width="20%"><input id="q_name" type="text" class="form-control" name="q_name" value="<%= filter.q_name || '' %>"></th>
-            <th width="10%"><input id="q_guard" type="text" class="form-control" name="q_guard" value="<%= filter.q_guard || '' %>"></th>
-            <th width="10%"><input id="q_method" type="text" class="form-control" name="q_method" value="<%= filter.q_method || '' %>"></th>
+            <th width="18%"><input id="q_name" type="text" class="form-control" name="q_name" value="<%= filter.q_name || '' %>"></th>
+            <th width="9%">
+              <select name="q_guard" id="q_guard" class="form-control">
+                <option disabled selected>Select</option>
+                <option value="web" <%= ((!filter.q_guard) ? '' : (filter.q_guard == 'web')) ? 'selected' : '' %>>web</option>
+                <option value="api" <%= ((!filter.q_guard) ? '' : (filter.q_guard == 'api')) ? 'selected' : '' %>>api</option>
+              </select>
+            </th>
+            <th width="15%">
+              <select name="q_method" id="q_method" class="form-control">
+                <option disabled selected>Select</option>
+                <option value="GET" <%= ((!filter.q_method) ? '' : (filter.q_method == 'GET')) ? 'selected' : '' %>>GET</option>
+                <option value="POST" <%= ((!filter.q_method) ? '' : (filter.q_method == 'POST')) ? 'selected' : '' %>>POST</option>
+                <option value="PATCH" <%= ((!filter.q_method) ? '' : (filter.q_method == 'PATCH')) ? 'selected' : '' %>>PATCH</option>
+                <option value="PUT" <%= ((!filter.q_method) ? '' : (filter.q_method == 'PUT')) ? 'selected' : '' %>>PUT</option>
+                <option value="DELETE" <%= ((!filter.q_method) ? '' : (filter.q_method == 'DELETE')) ? 'selected' : '' %>>DELETE</option>
+              </select>
+            </th>
             <th width="10%">
               <select name="q_status" id="q_status" class="form-control">
                 <option disabled selected>Select</option>
@@ -49,9 +61,9 @@
           <tr>
             <th width="5%"><input type="checkbox" id="checkall"/></th>
             <th width="5%">No</th>
-            <th width="20%">Name</th>
-            <th width="10%">Guard</th>
-            <th width="10%">Method</th>
+            <th width="18%">Name</th>
+            <th width="9%">Guard</th>
+            <th width="15%">Method</th>
             <th width="10%">Status</th>
             <th width="15%">Description</th>
             <th width="5%">Action</th>
@@ -65,8 +77,8 @@
             <td><input name="selected[]" value="<%= data.id %>" type="checkbox" /></td>
             <td><%= (i+1)+(paginate_data.page_size*(paginate_data.current_page-1)) %></td>
             <td><%= data.name %></td>
-            <td><span class="badge text-bg-secondary"><%= data.guard_name %></span></td>
-            <td><span class="badge text-bg-dark"><%= data.method %></span></td>
+            <td><span class="badge text-bg-primary"><%= data.guard_name %></span></td>
+            <td><%= data.method %></td>
             <td class="text-left">
               <% if (data.status == 'Active') { %>
                 <i class="fas fa-check-circle text-green-500 text-xl" title="Active"></i>

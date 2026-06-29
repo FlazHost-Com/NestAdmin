@@ -32,7 +32,7 @@ export class SettingWebController {
     const files = (req as any).files || {}
     await this.settingService.update(req.body, files)
     ;(req as any).flash?.('success', 'Save Setting Success.')
-    res.redirect(BASE)
+    req.session.save(() => res.redirect(BASE))
   }
 
   @Get(`${BASE}/fe-preview`)

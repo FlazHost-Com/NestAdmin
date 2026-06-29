@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Put, Delete, Param, Req, Res, Body, UseGuards } from '@nestjs/common'
+import { Controller, Get, Post, Put, Delete, Param, Req, Res, Body, UseGuards, UseInterceptors, UploadedFiles } from '@nestjs/common'
+import { AnyFilesInterceptor } from '@nestjs/platform-express'
 import { Request, Response } from 'express'
 import { UserService } from '../../../services/v1/UserService'
 import { SessionAuthGuard } from '../../../../auth/guards/session-auth.guard'
@@ -43,7 +44,8 @@ export class UserWebController {
   }
 
   @Post(`${BASE}`)
-  async store(@Body() body: any, @Req() req: Request, @Res() res: Response) {
+  @UseInterceptors(AnyFilesInterceptor())
+  async store(@Body() body: any, @UploadedFiles() _files: any, @Req() req: Request, @Res() res: Response) {
     const selected = body['roles[]'] ?? body.roles ?? []
     await this.userService.store({ ...body, roles: Array.isArray(selected) ? selected : [selected] })
     ;(req as any).flash?.('success', 'Create User Success.')
@@ -62,7 +64,8 @@ export class UserWebController {
   }
 
   @Put(`${BASE}/:id`)
-  async update(@Param('id') id: string, @Body() body: any, @Req() req: Request, @Res() res: Response) {
+  @UseInterceptors(AnyFilesInterceptor())
+  async update(@Param('id') id: string, @Body() body: any, @UploadedFiles() _files: any, @Req() req: Request, @Res() res: Response) {
     const selected = body['roles[]'] ?? body.roles ?? []
     await this.userService.update(id, { ...body, roles: Array.isArray(selected) ? selected : [selected] })
     ;(req as any).flash?.('success', 'Update User Success.')

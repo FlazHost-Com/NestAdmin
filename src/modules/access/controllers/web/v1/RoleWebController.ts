@@ -18,9 +18,9 @@ export class RoleWebController {
     routeRegistry.register('admin.v1.access.role.delete',                    'DELETE', `${BASE}/:id`)
     routeRegistry.register('admin.v1.access.role.delete_selected',           'POST',   `${BASE}/delete_selected`)
     routeRegistry.register('admin.v1.access.role.permission',                'GET',    `${BASE}/:id/permission`)
-    routeRegistry.register('admin.v1.access.role.permission.assign',         'GET',    `${BASE}/:id/permission/assign/:permission_id`)
+    routeRegistry.register('admin.v1.access.role.permission.assign',         'GET',    `${BASE}/:id/permission/:permission_id/assign`)
     routeRegistry.register('admin.v1.access.role.permission.assign_selected','POST',   `${BASE}/:id/permission/assign_selected`)
-    routeRegistry.register('admin.v1.access.role.permission.unassign',       'GET',    `${BASE}/:id/permission/unassign/:permission_id`)
+    routeRegistry.register('admin.v1.access.role.permission.unassign',       'GET',    `${BASE}/:id/permission/:permission_id/unassign`)
     routeRegistry.register('admin.v1.access.role.permission.unassign_selected','POST', `${BASE}/:id/permission/unassign_selected`)
   }
 
@@ -92,7 +92,7 @@ export class RoleWebController {
     })
   }
 
-  @Get(`${BASE}/:id/permission/assign/:permission_id`)
+  @Get(`${BASE}/:id/permission/:permission_id/assign`)
   async permissionAssign(
     @Param('id') id: string,
     @Param('permission_id') permission_id: string,
@@ -118,7 +118,7 @@ export class RoleWebController {
     res.redirect(`${BASE}/${id}/permission`)
   }
 
-  @Get(`${BASE}/:id/permission/unassign/:permission_id`)
+  @Get(`${BASE}/:id/permission/:permission_id/unassign`)
   async permissionUnassign(
     @Param('id') id: string,
     @Param('permission_id') permission_id: string,

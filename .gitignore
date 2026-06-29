@@ -75,3 +75,6 @@ public/fe/templates/*
 # NestAdmin — FE template catalog (auto-generated)
 _catalog.json
 public/fe/templates/_catalog.json
+
+# Local database
+*.db

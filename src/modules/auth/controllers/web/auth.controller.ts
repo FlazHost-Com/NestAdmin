@@ -37,7 +37,7 @@ export class AuthWebController {
   @UseGuards(AuthGuard('local'))
   async loginPost(@Req() req: Request, @Res() res: Response) {
     (req.session as any)['user'] = req.user as any
-    res.redirect('/admin/v1/dashboard')
+    req.session.save(() => res.redirect('/admin/v1/dashboard'))
   }
 
   @Get('/auth/register')

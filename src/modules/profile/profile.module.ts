@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { User } from '../access/models/user.entity'
 import { ProfileService } from './services/v1/ProfileService'
 import { ProfileWebController } from './controllers/web/v1/ProfileWebController'
+import { ProfileApiController } from './controllers/api/v1/ProfileApiController'
 import { AuthModule } from '../auth/auth.module'
 
 @Module({
@@ -10,7 +11,7 @@ import { AuthModule } from '../auth/auth.module'
     TypeOrmModule.forFeature([User]),
     AuthModule,
   ],
-  controllers: [ProfileWebController],
+  controllers: [ProfileWebController, ProfileApiController],
   providers: [ProfileService],
   exports: [ProfileService],
 })

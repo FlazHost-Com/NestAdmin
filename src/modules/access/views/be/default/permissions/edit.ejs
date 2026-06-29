@@ -11,16 +11,16 @@
       <% if(getError('name')) { %><div class="invalid-feedback"><%= getError('name')['msg'] %></div><% } %>
     </div>
     <div class="mb-3">
-      <label for="guard_name" class="form-label fw-semibold">Guard Name</label>
-      <select id="guard_name" name="guard_name" class="form-control <% if(getError('guard_name')) { %>is-invalid<% } %>">
+      <label for="guard_name" class="form-label fw-semibold">Guard</label>
+      <select id="guard_name" name="guard_name" class="form-control">
         <option value="web" <%= (data.guard_name === 'web') ? 'selected' : '' %>>web</option>
         <option value="api" <%= (data.guard_name === 'api') ? 'selected' : '' %>>api</option>
       </select>
-      <% if(getError('guard_name')) { %><div class="invalid-feedback"><%= getError('guard_name')['msg'] %></div><% } %>
     </div>
     <div class="mb-3">
       <label for="method" class="form-label fw-semibold">Method</label>
       <select id="method" name="method" class="form-control <% if(getError('method')) { %>is-invalid<% } %>">
+        <option value="">-- Select Method --</option>
         <option value="GET"    <%= (data.method === 'GET')    ? 'selected' : '' %>>GET</option>
         <option value="POST"   <%= (data.method === 'POST')   ? 'selected' : '' %>>POST</option>
         <option value="PUT"    <%= (data.method === 'PUT')    ? 'selected' : '' %>>PUT</option>

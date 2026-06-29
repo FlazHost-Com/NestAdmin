@@ -40,6 +40,6 @@ export class ProfileWebController {
       timezone: updated.timezone,
     }
     ;(req as any).flash?.('success', 'Update Profile Success.')
-    res.redirect(BASE)
+    req.session.save(() => res.redirect(BASE))
   }
 }

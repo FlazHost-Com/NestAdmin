@@ -8,8 +8,28 @@ import { SettingCacheService } from '../../../../services/setting-cache.service'
 import { THEMES } from '../../../../config/themes'
 import { AppError } from '../../../../errors/AppError'
 
-// Minimal opentailwind stub — real catalog can be fetched from remote API
-const EMPTY_FE_TEMPLATES: any[] = []
+const FE_TEMPLATES: any[] = [
+  { slug: 'agency-consulting-002-creative-agency', name: 'Creative Agency', category: 'agency' },
+  { slug: 'saas-005-saas-landing', name: 'SaaS Landing', category: 'saas' },
+  { slug: 'ecommerce-001-online-shop', name: 'Online Shop', category: 'ecommerce' },
+  { slug: 'portfolio-001-personal-portfolio', name: 'Personal Portfolio', category: 'portfolio' },
+  { slug: 'blog-001-minimal-blog', name: 'Minimal Blog', category: 'blog' },
+  { slug: 'restaurant-001-food-restaurant', name: 'Food Restaurant', category: 'restaurant' },
+  { slug: 'startup-001-tech-startup', name: 'Tech Startup', category: 'startup' },
+  { slug: 'education-001-online-course', name: 'Online Course', category: 'education' },
+  { slug: 'fitness-001-gym-fitness', name: 'Gym & Fitness', category: 'fitness' },
+  { slug: 'real-estate-001-property', name: 'Property', category: 'real-estate' },
+  { slug: 'medical-001-healthcare', name: 'Healthcare', category: 'medical' },
+  { slug: 'finance-001-fintech', name: 'Fintech', category: 'finance' },
+  { slug: 'travel-001-travel-agency', name: 'Travel Agency', category: 'travel' },
+  { slug: 'photography-001-photo-studio', name: 'Photo Studio', category: 'photography' },
+  { slug: 'music-001-music-band', name: 'Music Band', category: 'music' },
+  { slug: 'nonprofit-001-charity', name: 'Charity', category: 'nonprofit' },
+  { slug: 'architecture-001-design-studio', name: 'Design Studio', category: 'architecture' },
+  { slug: 'automotive-001-car-dealer', name: 'Car Dealer', category: 'automotive' },
+  { slug: 'fashion-001-clothing-store', name: 'Clothing Store', category: 'fashion' },
+  { slug: 'hotel-001-hospitality', name: 'Hospitality', category: 'hotel' },
+]
 
 @Injectable()
 export class SettingService implements ISettingService {
@@ -37,7 +57,7 @@ export class SettingService implements ISettingService {
     const qPage: number = parseInt(filter.q_page || '1', 10) || 1
     const qPageSize: number = parseInt(filter.q_page_size || '8', 10) || 8
 
-    const allTemplates = EMPTY_FE_TEMPLATES.filter(t => {
+    const allTemplates = FE_TEMPLATES.filter(t => {
       if (qName && !t.name.toLowerCase().includes(qName.toLowerCase())) return false
       if (qCategory && t.category !== qCategory) return false
       return true
@@ -45,7 +65,7 @@ export class SettingService implements ISettingService {
     const total = allTemplates.length
     const start = (qPage - 1) * qPageSize
     const feTemplates = allTemplates.slice(start, start + qPageSize)
-    const feCategories: string[] = [...new Set(EMPTY_FE_TEMPLATES.map((t: any) => t.category))]
+    const feCategories: string[] = [...new Set(FE_TEMPLATES.map((t: any) => t.category))]
 
     return {
       data,

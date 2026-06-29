@@ -1,7 +1,7 @@
 <div class="flex items-center justify-between mb-6">
   <div>
     <h1 class="text-2xl font-bold text-gray-800">UI Components</h1>
-    <p class="text-sm text-gray-600">Acuan elemen siap-pakai.</p>
+    <p class="text-sm text-gray-600">Acuan elemen siap-pakai. Lihat <code>docs/UI_COMPONENTS.md</code> untuk snippet copy-paste.</p>
   </div>
 </div>
 
@@ -47,7 +47,7 @@
 
 <!-- ============ BADGES / STATUS ============ -->
 <section class="mb-10">
-  <h2 class="text-lg font-bold mb-3" style="color:var(--primary)">3. Badge &amp; Status</h2>
+  <h2 class="text-lg font-bold mb-3" style="color:var(--primary)">3. Badge & Status</h2>
   <div class="bg-white rounded-xl shadow-lg p-6 flex flex-wrap items-center gap-3">
     <span class="badge text-bg-primary">Primary</span>
     <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-sm">Delivered</span>
@@ -72,7 +72,7 @@
 
 <!-- ============ BUTTON & DROPDOWN ============ -->
 <section class="mb-10">
-  <h2 class="text-lg font-bold mb-3" style="color:var(--primary)">5. Button &amp; Dropdown Action</h2>
+  <h2 class="text-lg font-bold mb-3" style="color:var(--primary)">5. Button & Dropdown Action</h2>
   <div class="bg-white rounded-xl shadow-lg p-6 flex flex-wrap items-center gap-3">
     <button class="btn btn-primary-tw px-4 py-2"><i class="fas fa-save me-1"></i> Primary</button>
     <button class="btn btn-success btn-sm">Success</button>
@@ -137,7 +137,7 @@
              onerror="this.style.visibility='hidden'">
         <input id="fileUpload" type="file" name="file" accept="image/*" class="form-control">
       </div>
-      <small class="text-gray-400 text-xs">Form upload pakai <code>enctype="multipart/form-data"</code>.</small>
+      <small class="text-muted">Form upload pakai <code>enctype="multipart/form-data"</code>. Gambar otomatis dikonversi ke WebP saat disimpan ke OSS.</small>
     </div>
     <button class="btn btn-primary-tw px-4 py-2"><i class="fas fa-save me-1"></i> Save</button>
   </div>
@@ -145,14 +145,16 @@
 
 <!-- ============ RICH TEXT EDITOR ============ -->
 <section class="mb-10">
-  <h2 class="text-lg font-bold mb-3" style="color:var(--primary)">8. Rich Text Editor (Trumbowyg)</h2>
+  <h2 class="text-lg font-bold mb-3" style="color:var(--primary)">8. Rich Text Editor (Trumbowyg + File Manager)</h2>
   <div class="tw-card p-6">
     <p class="text-sm text-gray-500 mb-4">
-      Textarea dengan toolbar format. Tambahkan class <code>trumbowyg-editor</code> pada textarea biasa untuk mengaktifkannya.
+      Textarea dengan toolbar format + tombol <em>File Manager</em> untuk unggah/sisip gambar
+      langsung ke OSS. Tambahkan class <code>trumbowyg-editor</code> pada textarea biasa
+      (lihat <strong>nomor 7</strong>) untuk mengaktifkannya.
     </p>
     <div class="mb-2">
-      <label class="form-label fw-semibold">Rich Text Editor</label>
-      <textarea class="trumbowyg-editor form-control"><p>Tulis konten <strong>kaya format</strong> di sini.</p></textarea>
+      <label class="form-label fw-semibold">Rich Text Editor + File Manager</label>
+      <textarea class="trumbowyg-editor form-control"><p>Tulis konten <strong>kaya format</strong> di sini. Klik ikon gambar pada toolbar untuk membuka <em>File Manager</em>.</p></textarea>
     </div>
   </div>
 </section>
@@ -200,7 +202,8 @@
 </section>
 
 <script>
-  var THEME = <%- JSON.stringify(theme) %>;
+  // Aksen tema dari server (template switcher)
+  var cs=getComputedStyle(document.documentElement); var THEME={primary:cs.getPropertyValue('--primary').trim()||'#3B82F6',secondary:cs.getPropertyValue('--secondary').trim()||'#60A5FA',light:cs.getPropertyValue('--theme-light').trim()||'#EFF6FF',dark:cs.getPropertyValue('--theme-dark').trim()||'#1E3A8A'};
 
   // Counter animation
   document.querySelectorAll('.counter').forEach(function(el){

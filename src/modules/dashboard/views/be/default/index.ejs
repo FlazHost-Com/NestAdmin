@@ -1,7 +1,7 @@
 <div class="flex items-center justify-between mb-2">
   <div>
     <h1 class="text-2xl font-bold text-gray-800">Dashboard Overview</h1>
-    <p class="text-sm text-gray-600">Selamat datang kembali, <%= auth ? auth.name : 'Admin' %>! Berikut ringkasan hari ini.</p>
+    <p class="text-sm text-gray-600">Selamat datang kembali, <%= auth.name %>! Berikut ringkasan hari ini.</p>
   </div>
   <span class="text-sm text-gray-500"><%= now('YYYY-MM-DD HH:mm') %></span>
 </div>
@@ -239,6 +239,7 @@
 </div>
 
 <script>
+  // Aksen tema dari server (template switcher)
   var THEME = <%- JSON.stringify(theme) %>;
 
   // Counter animation
@@ -284,16 +285,15 @@
   }
   function deleteSelectedOrders(){
     var checked = document.querySelectorAll('.row-checkbox:checked');
-    if(!checked.length){ Toast('Please select orders to delete.','info'); return; }
-    confirmDialog('Delete '+checked.length+' selected orders? (sample only)').then(function(ok){
-      if(!ok) return;
+    if(!checked.length){ alert('Please select orders to delete.'); return; }
+    if(confirm('Delete '+checked.length+' selected orders? (sample only)')){
       checked.forEach(function(cb){ cb.closest('tr').remove(); });
       document.getElementById('selectAll').checked=false; updateBulk();
-    });
+    }
   }
   function exportSelectedOrders(){
     var checked = document.querySelectorAll('.row-checkbox:checked');
-    if(!checked.length){ Toast('Please select orders to export.','info'); return; }
-    Toast(checked.length+' orders exported (sample only).','success');
+    if(!checked.length){ alert('Please select orders to export.'); return; }
+    alert(checked.length+' orders exported (sample only).');
   }
 </script>
