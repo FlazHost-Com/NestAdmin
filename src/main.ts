@@ -15,6 +15,8 @@ import csurf from 'csurf'
 const expressLayouts = require('express-ejs-layouts')
 import { AppModule } from './app.module'
 import { AppExceptionFilter } from './filters/app-exception.filter'
+import AppDataSource from './config/ormconfig'
+import { buildSessionStore } from './services/sessionStore'
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule)
@@ -47,17 +49,13 @@ async function bootstrap() {
 
   // Session
   const sessionTtlHours = config.get<number>('SESSION_TTL_HOURS', 6)
-  const sessionStore = (() => {
-    if (config.get('NODE_ENV') === 'test') return undefined
-    try {
-      const { createClient } = require('redis')
-      const { RedisStore } = require('connect-redis')
-      const redisUrl = config.get<string>('REDIS_URL', 'redis://127.0.0.1:6379')
-      const redisClient = createClient({ url: redisUrl })
-      redisClient.connect().catch(() => {})
-      return new RedisStore({ client: redisClient })
-    } catch { return undefined }
-  })()
+  const sessionStore = buildSessionStore({
+    driver: config.get<string>('SESSION_DRIVER', 'redis'),
+    redisUrl: config.get<string>('REDIS_URL', 'redis://127.0.0.1:6379'),
+    dataSource: AppDataSource,
+    ttlMs: sessionTtlHours * 60 * 60 * 1000,
+    isTest: config.get('NODE_ENV') === 'test',
+  })
 
   app.use(session({
     store: sessionStore,

@@ -18,6 +18,7 @@ export const envValidationSchema = Joi.object({
   DB_NAME: Joi.string().default('nestadmin.sqlite'), // backward-compat alias
 
   // Session & Auth
+  SESSION_DRIVER: Joi.string().valid('redis', 'database').default('redis'),
   SESSION_SECRET: Joi.string().min(16).required(),
   SESSION_TTL_HOURS: Joi.number().default(6),
   JWT_SECRET: Joi.string().min(16).required(),
