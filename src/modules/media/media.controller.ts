@@ -7,15 +7,15 @@ import {
   UseGuards,
   UseInterceptors,
   UploadedFile,
-} from '@nestjs/common'
-import { FileInterceptor } from '@nestjs/platform-express'
-import { memoryStorage } from 'multer'
-import { Request, Response } from 'express'
-import { MediaService } from './media.service'
-import { SessionAuthGuard } from '../auth/guards/session-auth.guard'
-import { routeRegistry } from '../../utils/named-routes'
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { memoryStorage } from 'multer';
+import { Request, Response } from 'express';
+import { MediaService } from './media.service';
+import { SessionAuthGuard } from '../auth/guards/session-auth.guard';
+import { routeRegistry } from '../../utils/named-routes';
 
-const BASE = '/admin/v1/media'
+const BASE = '/admin/v1/media';
 
 /**
  * MediaController — file manager untuk Trumbowyg.
@@ -31,16 +31,16 @@ const BASE = '/admin/v1/media'
 @UseGuards(SessionAuthGuard)
 export class MediaController {
   constructor(private mediaService: MediaService) {
-    routeRegistry.register('admin.v1.media.list',   'GET',  `${BASE}/list`)
-    routeRegistry.register('admin.v1.media.upload', 'POST', `${BASE}/upload`)
-    routeRegistry.register('admin.v1.media.delete', 'POST', `${BASE}/delete`)
+    routeRegistry.register('admin.v1.media.list', 'GET', `${BASE}/list`);
+    routeRegistry.register('admin.v1.media.upload', 'POST', `${BASE}/upload`);
+    routeRegistry.register('admin.v1.media.delete', 'POST', `${BASE}/delete`);
   }
 
   /** GET /admin/v1/media/list → JSON array of uploaded files */
   @Get(`${BASE}/list`)
   list(@Res() res: Response) {
-    const files = this.mediaService.list()
-    return res.json({ status: true, message: 'OK', data: files })
+    const files = this.mediaService.list();
+    return res.json({ status: true, message: 'OK', data: files });
   }
 
   /**
@@ -54,23 +54,32 @@ export class MediaController {
       storage: memoryStorage(),
       limits: { fileSize: 2 * 1024 * 1024 },
       fileFilter: (_req, file, cb) => {
-        if (file.mimetype.startsWith('image/')) cb(null, true)
-        else cb(new Error('Only image files are allowed'), false)
+        if (file.mimetype.startsWith('image/')) cb(null, true);
+        else cb(new Error('Only image files are allowed'), false);
       },
     }),
   )
-  upload(
-    @UploadedFile() file: Express.Multer.File,
-    @Res() res: Response,
-  ) {
+  upload(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
     if (!file) {
-      return res.status(400).json({ status: false, message: 'File not found', data: null })
+      return res
+        .status(400)
+        .json({ status: false, message: 'File not found', data: null });
     }
     try {
-      const saved = this.mediaService.upload(file.originalname, file.buffer, file.mimetype)
-      return res.json({ status: true, message: 'Upload Success.', data: saved })
+      const saved = this.mediaService.upload(
+        file.originalname,
+        file.buffer,
+        file.mimetype,
+      );
+      return res.json({
+        status: true,
+        message: 'Upload Success.',
+        data: saved,
+      });
     } catch (e: any) {
-      return res.status(e.getStatus?.() ?? 400).json({ status: false, message: e.message, data: null })
+      return res
+        .status(e.getStatus?.() ?? 400)
+        .json({ status: false, message: e.message, data: null });
     }
   }
 
@@ -80,15 +89,19 @@ export class MediaController {
    */
   @Post(`${BASE}/delete`)
   deleteFile(@Req() req: Request, @Res() res: Response) {
-    const key: string = req.body?.key || ''
+    const key: string = req.body?.key || '';
     if (!key) {
-      return res.status(400).json({ status: false, message: 'Key is required', data: null })
+      return res
+        .status(400)
+        .json({ status: false, message: 'Key is required', data: null });
     }
     try {
-      this.mediaService.delete(key)
-      return res.json({ status: true, message: 'Delete Success.', data: null })
+      this.mediaService.delete(key);
+      return res.json({ status: true, message: 'Delete Success.', data: null });
     } catch (e: any) {
-      return res.status(e.getStatus?.() ?? 400).json({ status: false, message: e.message, data: null })
+      return res
+        .status(e.getStatus?.() ?? 400)
+        .json({ status: false, message: e.message, data: null });
     }
   }
 }

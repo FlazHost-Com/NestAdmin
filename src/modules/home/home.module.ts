@@ -1,7 +1,7 @@
-import { Module } from '@nestjs/common'
-import { HomeController } from './controllers/home.controller'
-import { FeTemplateService } from './services/fe-template.service'
-import { FeCatalogService } from './services/fe-catalog.service'
+import { Module } from '@nestjs/common';
+import { HomeController } from './controllers/home.controller';
+import { FeTemplateService } from './services/fe-template.service';
+import { FeCatalogService } from './services/fe-catalog.service';
 
 @Module({
   controllers: [HomeController],

@@ -1,58 +1,64 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm'
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity('settings')
 export class Setting {
   @PrimaryGeneratedColumn('uuid')
-  id!: string
+  id!: string;
 
   @Column({ length: 255, nullable: true })
-  initial!: string
+  initial!: string;
 
   @Column({ length: 255, nullable: true })
-  name!: string
+  name!: string;
 
   @Column({ type: 'text', nullable: true })
-  description!: string
+  description!: string;
 
   @Column({ length: 255, nullable: true })
-  icon!: string
+  icon!: string;
 
   @Column({ length: 255, nullable: true })
-  logo!: string
+  logo!: string;
 
   @Column({ length: 255, nullable: true })
-  favicon!: string
+  favicon!: string;
 
   @Column({ length: 255, nullable: true })
-  login_image!: string
+  login_image!: string;
 
   @Column({ length: 255, nullable: true })
-  phone!: string
+  phone!: string;
 
   @Column({ length: 255, nullable: true })
-  address!: string
+  address!: string;
 
   @Column({ length: 255, nullable: true })
-  email!: string
+  email!: string;
 
   @Column({ length: 255, nullable: true })
-  copyright!: string
+  copyright!: string;
 
   @Column({ length: 20, default: 'Blue' })
-  theme!: string
+  theme!: string;
 
   @Column({ length: 80, default: 'agency-consulting-002-creative-agency' })
-  fe_template!: string
+  fe_template!: string;
 
   @Column({ length: 36, nullable: true })
-  created_by!: string
+  created_by!: string;
 
   @Column({ length: 36, nullable: true })
-  updated_by!: string
+  updated_by!: string;
 
   @CreateDateColumn()
-  created_at!: Date
+  created_at!: Date;
 
   @UpdateDateColumn()
-  updated_at!: Date
+  updated_at!: Date;
 }

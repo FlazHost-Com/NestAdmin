@@ -5,8 +5,12 @@
   "compilerOptions": {
     "deleteOutDir": true,
     "assets": [
-      { "include": "**/*.ejs", "watchAssets": true },
-      { "include": "**/public/**", "watchAssets": true }
+      {
+        "include": "**/*.ejs"
+      },
+      {
+        "include": "**/public/**"
+      }
     ]
   }
 }

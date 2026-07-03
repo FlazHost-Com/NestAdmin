@@ -1,17 +1,21 @@
-import * as Joi from 'joi'
+import * as Joi from 'joi';
 
 export const envValidationSchema = Joi.object({
-  NODE_ENV: Joi.string().valid('development', 'production', 'test').default('development'),
+  NODE_ENV: Joi.string()
+    .valid('development', 'production', 'test')
+    .default('development'),
   APP_NAME: Joi.string().default('NestAdmin'),
   APP_PORT: Joi.number().default(3000),
   APP_MODE: Joi.string().valid('full', 'api').default('full'),
 
   // Database
-  DB_TYPE: Joi.string().valid('sqlite', 'better-sqlite3', 'mysql', 'mariadb', 'postgres').default('better-sqlite3'),
+  DB_TYPE: Joi.string()
+    .valid('sqlite', 'better-sqlite3', 'mysql', 'mariadb', 'postgres')
+    .default('better-sqlite3'),
   DB_HOST: Joi.string().default('localhost'),
   DB_PORT: Joi.number().default(3306),
   DB_USERNAME: Joi.string().default('root'),
-  DB_USER: Joi.string().default('root'),       // backward-compat alias
+  DB_USER: Joi.string().default('root'), // backward-compat alias
   DB_PASSWORD: Joi.string().allow('').default(''),
   DB_PASS: Joi.string().allow('').default(''), // backward-compat alias
   DB_DATABASE: Joi.string().default('nestadmin.sqlite'),
@@ -49,4 +53,4 @@ export const envValidationSchema = Joi.object({
   MAIL_FROM_ADDRESS: Joi.string().allow('').default(''),
 
   FE_CATALOG_TTL_HOURS: Joi.number().default(6),
-})
+});
