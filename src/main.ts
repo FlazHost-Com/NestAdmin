@@ -22,6 +22,13 @@ import { LOCAL_URL_PREFIX, localStorageDir } from './config/storageClient';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  // Di belakang reverse proxy TLS-terminating (CapRover: browser HTTPS -> proxy
+  // HTTP -> app:80): percayai X-Forwarded-Proto agar req.secure=true. Tanpa ini
+  // cookie Secure (session + csurf) tak pernah terpasang -> POST login gagal
+  // EBADCSRFTOKEN ("invalid csrf token"). Ini config app, bukan bug DB/infra.
+  app.set('trust proxy', 1);
+
   const config = app.get(ConfigService);
 
   const port = config.get<number>('APP_PORT', 3000);
