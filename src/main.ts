@@ -18,6 +18,7 @@ import { AppModule } from './app.module';
 import { AppExceptionFilter } from './filters/app-exception.filter';
 import { DataSource } from 'typeorm';
 import { buildSessionStore } from './services/sessionStore';
+import { LOCAL_URL_PREFIX, localStorageDir } from './config/storageClient';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -114,6 +115,14 @@ async function bootstrap() {
     app.set('layout extractStyles', true);
     // public/ is at project root — process.cwd() is reliable across environments
     app.useStaticAssets(join(process.cwd(), 'public'));
+  }
+
+  // Storage: when driver=local, serve the upload dir at the stable `/storage`
+  // prefix so DB-keyed files render at `/storage/<key>`. The prefix is decoupled
+  // from STORAGE_BASE_PATH, so an absolute path (e.g. /var/data in Docker) still
+  // yields a valid URL. For oss/s3 no mount is registered (presigned URLs).
+  if (config.get('STORAGE_DRIVER', 'local') === 'local') {
+    app.useStaticAssets(localStorageDir(), { prefix: LOCAL_URL_PREFIX });
   }
 
   // Global exception filter
